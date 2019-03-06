@@ -1,0 +1,17 @@
+{
+  "description": "My calling card",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sueka/card.git"
+  },
+  "license": "UNLICENSED",
+  "dependencies": {
+    "parcel": "^1.11.0",
+    "postcss-modules": "^1.4.1",
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4"
+  },
+  "scripts": {
+    "parcel": "parcel"
+  }
+}
