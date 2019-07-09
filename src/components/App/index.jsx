@@ -1,13 +1,12 @@
 import React from 'react'
+import { Switch, Route } from 'react-router-dom'
 
-import { Card } from '..'
-
-import classes from './classes.css'
+import IndexPage from '../IndexPage'
 
 const App = () => (
-  <div className={ classes.App }>
-    <Card />
-  </div>
+  <Switch>
+    <Route exact strict sensitive path="/" component={ IndexPage } />
+  </Switch>
 )
 
 export default App
