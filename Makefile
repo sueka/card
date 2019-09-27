@@ -5,7 +5,7 @@ PARCEL := $(NPM) run parcel
 
 all : prepare build
 
-prepare : package.json
+prepare : package.json package-lock.json
 	$(NPM) i
 
 build : dist/index.html
