@@ -6,8 +6,8 @@
   },
   "license": "UNLICENSED",
   "dependencies": {
-    "parcel": "^1.12.3",
-    "postcss-modules": "^1.4.1",
+    "parcel": "^2.8.2",
+    "postcss-modules": "^6.0.0",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
     "react-router-dom": "^5.0.1"
