@@ -1,0 +1,22 @@
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+body {
+  /* Checkered board pattern */
+  background-image: repeating-conic-gradient(#F8F8F8 -90deg 0deg, #E8E8E8 0deg 90deg);
+  background-size: 16px 16px;
+
+  /* Center item */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+biz-card {
+  box-shadow: darkslategray 0 0 16px;
+}

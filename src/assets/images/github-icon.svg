@@ -1,0 +1,34 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="420" height="420" viewBox="0 0 12 12" stroke="none">
+  <g fill="#f0f0f0">
+    <rect x="0" y="0" width="12" height="12" />
+  </g>
+  <g fill="#ffd700">
+    <rect x="1" y="1" width="2" height="2" />
+    <!-- <rect x="3" y="1" width="2" height="2" /> -->
+    <rect x="5" y="1" width="2" height="2" />
+    <!-- <rect x="7" y="1" width="2" height="2" /> -->
+    <rect x="9" y="1" width="2" height="2" />
+    <rect x="1" y="3" width="2" height="2" />
+    <!-- <rect x="3" y="3" width="2" height="2" /> -->
+    <rect x="5" y="3" width="2" height="2" />
+    <!-- <rect x="7" y="3" width="2" height="2" /> -->
+    <rect x="9" y="3" width="2" height="2" />
+    <!-- <rect x="1" y="5" width="2" height="2" /> -->
+    <rect x="3" y="5" width="2" height="2" />
+    <rect x="5" y="5" width="2" height="2" />
+    <rect x="7" y="5" width="2" height="2" />
+    <!-- <rect x="9" y="5" width="2" height="2" /> -->
+    <!-- <rect x="1" y="7" width="2" height="2" /> -->
+    <rect x="3" y="7" width="2" height="2" />
+    <!-- <rect x="5" y="7" width="2" height="2" /> -->
+    <rect x="7" y="7" width="2" height="2" />
+    <!-- <rect x="9" y="7" width="2" height="2" /> -->
+    <rect x="1" y="9" width="2" height="2" />
+    <rect x="3" y="9" width="2" height="2" />
+    <rect x="5" y="9" width="2" height="2" />
+    <rect x="7" y="9" width="2" height="2" />
+    <rect x="9" y="9" width="2" height="2" />
+  </g>
+</svg>

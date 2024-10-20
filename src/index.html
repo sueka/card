@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>sueka/card</title>
+    <link href="./main.css" rel="stylesheet" />
+    <meta name="robots" content="noindex" />
+
+    <!-- For <twitter-sn>, <github-username> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/brands.min.css" integrity="sha512-EJp8vMVhYl7tBFE2rgNGb//drnr1+6XKMvTyamMS34YwOEFohhWkGq13tPWnK0FbjSS6D8YoA3n3bZmb3KiUYA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- For <web-site> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/solid.min.css" integrity="sha512-/r+0SvLvMMSIf41xiuy19aNkXxI+3zb/BN8K9lnDDWI09VM0dwgTMzK7Qi5vv5macJ3VH4XZXr60ip7v13QnmQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- For <qr-code> -->
+    <script type="importmap">
+      {
+        "imports": {
+          "qrcode": "https://cdn.jsdelivr.net/npm/qrcode@1.5.4/+esm"
+        }
+      }
+    </script>
+
+    <!-- Custom elements -->
+    <script type="module" src="./BizCard.js"></script>
+    <script type="module" src="./Ordinary.js"></script>
+    <script type="module" src="./Icon.js"></script>
+    <script type="module" src="./Title.js"></script>
+    <script type="module" src="./FullName.js"></script>
+    <script type="module" src="./BioInfo.js"></script>
+    <script type="module" src="./QrCode.js"></script>
+    <script type="module" src="./TwitterSn.js"></script>
+    <script type="module" src="./GitHubUsername.js"></script>
+    <script type="module" src="./WebSite.js"></script>
+  </head>
+  <body>
+    <biz-card ipafont bg-color="azure">
+      <ordinary- type="chief" size="12.4667mm" color="paleturquoise"></ordinary->
+      <icon- rounded src="./assets/images/github-icon.svg"></icon->
+      <full-name>Sueka</full-name>
+      <bio-info>
+        こんにちは
+      </bio-info>
+      <qr-code rounded content="https://card.sueka.me" dark="#191970" light="#fff0f5"></qr-code>
+
+      <!-- Accounts -->
+      <twitter-sn squared>
+        <a href="https://x.com/hsueka">@hsueka</a>
+      </twitter-sn>
+      <github-username squared>
+        <a href="https://github.com/sueka">sueka</a>
+      </github-username>
+      <web-site logo-color="gold">
+        <a href="https://sueka.me">https://sueka.me</a>
+      </web-site>
+    </biz-card>
+  </body>
+</html>
