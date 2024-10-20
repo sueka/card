@@ -1,3 +1,5 @@
+PLATFORM := $(shell uname -s)
+
 RSYNC := rsync
 NPX := npx
 SERVE := serve
@@ -11,8 +13,12 @@ art := $(shell find src ! -name "*.ts" ! -name "IPA_Font_License_Agreement_v1.0.
 build : _site
 _site : $(src)
 	$(NPX) tsc --build .
+ifeq ($(PLATFORM),Darwin)
 	\cd src && \
 	$(RSYNC) --relative $(patsubst src/%, %, $(art)) ../_site/
+else
+	\cp --parents $(art) _site/
+endif
 
 serve : build
 	\find src -type f | entr make & \
