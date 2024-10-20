@@ -17,7 +17,8 @@ ifeq ($(PLATFORM),Darwin)
 	\cd src && \
 	$(RSYNC) --relative $(patsubst src/%, %, $(art)) ../_site/
 else
-	\cp --parents $(art) _site/
+	\cd src && \
+	\cp --parents $(patsubst src/%, %, $(art)) ../_site/
 endif
 
 serve : build
