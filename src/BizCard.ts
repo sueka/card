@@ -82,7 +82,7 @@ class BizCard extends HTMLElement {
       }
 
       /* Layout */
-      :host{
+      :host {
         box-sizing: border-box;
         padding: 4mm;
 
