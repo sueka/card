@@ -15,11 +15,19 @@ export {}
  * </biz-card>
  */
 class BizCard extends HTMLElement {
+  #frontCss: CSSStyleSheet
+  #frontStyle: HTMLStyleElement
   #ipafontCss: CSSStyleSheet
 
   constructor() {
     super()
     this.attachShadow({ mode: 'open' })
+
+    this.#frontCss = new CSSStyleSheet()
+    this.shadowRoot?.adoptedStyleSheets.push(this.#frontCss)
+
+    this.#frontStyle = document.createElement('style')
+    document.head.append(this.#frontStyle)
 
     this.#ipafontCss = new CSSStyleSheet()
     this.shadowRoot?.adoptedStyleSheets.push(this.#ipafontCss)
@@ -27,6 +35,7 @@ class BizCard extends HTMLElement {
 
   connectedCallback() {
     this.#loadCss()
+    this.#preferFront()
     this.#render()
   }
 
@@ -70,6 +79,67 @@ class BizCard extends HTMLElement {
         max-height: 55mm;
       }
 
+      /* Layout */
+      :host {
+        box-sizing: border-box;
+        padding: 4mm;
+      }
+
+      /* Text */
+      :host {
+        font-size: 9pt;
+        font-feature-settings: 'pwid';
+      }
+
+      /* Ordinary */
+      :host {
+        position: relative;
+      }
+
+      ::slotted(*), .accounts {
+        position: relative;
+      }
+
+      ::slotted(ordinary-) {
+        position: revert-layer;
+      }
+    `)
+
+    const style = document.createElement('style')
+    document.head.append(style)
+
+    style.replaceChildren(document.createTextNode(`
+      /* Link */
+      :link {
+        color: LinkText;
+      }
+
+      :visited {
+        color: VisitedText;
+      }
+
+      :any-link {
+        text-decoration-line: none;
+      }
+
+      :any-link:hover {
+        text-decoration: underline dashed;
+      }
+
+      :any-link:active {
+        text-decoration: underline;
+      }
+
+      @media print {
+        :any-link {
+          color: currentColor;
+        }
+      }
+    `))
+  }
+
+  #preferFront() {
+    this.#frontCss.replaceSync(`
       ::slotted(qr-code) {
         /* Quarter of the card */
         max-width: calc((91mm - 8mm) / 2);
@@ -83,9 +153,6 @@ class BizCard extends HTMLElement {
 
       /* Layout */
       :host {
-        box-sizing: border-box;
-        padding: 4mm;
-
         display: flex;
         justify-content: space-between;
         gap: 4mm;
@@ -139,67 +206,17 @@ class BizCard extends HTMLElement {
       .accounts ::slotted(*) {
         display: contents;
       }
-
-      /* Text */
-      :host {
-        font-size: 9pt;
-        font-feature-settings: 'pwid';
-      }
-
-      /* Ordinary */
-      :host {
-        position: relative;
-      }
-
-      ::slotted(*), .accounts {
-        position: relative;
-      }
-
-      ::slotted(ordinary-) {
-        position: revert-layer;
-      }
     `)
 
-    const style = document.createElement('style')
-
     // FIXME: 本当はシャドウルートのスタイルシートで .accounts ::slotted(*)::part(account-info-inner) のようにしたかった。
-    style.append(document.createTextNode(`
+    this.#frontStyle.replaceChildren(document.createTextNode(`
       /* Layout */
       ::part(account-info-inner) {
         display: grid;
         grid-template-columns: subgrid; /* in .accounts */
         grid-column: 1 / 3;
       }
-
-      /* Link */
-      :link {
-        color: LinkText;
-      }
-
-      :visited {
-        color: VisitedText;
-      }
-
-      :any-link {
-        text-decoration-line: none;
-      }
-
-      :any-link:hover {
-        text-decoration: underline dashed;
-      }
-
-      :any-link:active {
-        text-decoration: underline;
-      }
-
-      @media print {
-        :any-link {
-          color: currentColor;
-        }
-      }
     `))
-
-    document.head.append(style)
   }
 
   #preferIpaFonts() {
