@@ -1,8 +1,10 @@
+import delay from "./delay.js"
+
 export {}
 
 /**
  * Defines:
- * <biz-card [ipafont] [color=Color] [bg-color=Color]>
+ * <biz-card [backside] [ipafont] [color=Color] [bg-color=Color]>
  *   [<ordinary- ... />]
  *   [<icon- ... />]
  *   [<title- ... />]
@@ -15,13 +17,19 @@ export {}
  * </biz-card>
  */
 class BizCard extends HTMLElement {
+  #backside: boolean
   #frontCss: CSSStyleSheet
   #frontStyle: HTMLStyleElement
+  #backCss: CSSStyleSheet
+  #animeCss: CSSStyleSheet
+  #flipCss: CSSStyleSheet
   #ipafontCss: CSSStyleSheet
 
   constructor() {
     super()
     this.attachShadow({ mode: 'open' })
+
+    this.#backside = this.hasAttribute('backside')
 
     this.#frontCss = new CSSStyleSheet()
     this.shadowRoot?.adoptedStyleSheets.push(this.#frontCss)
@@ -29,22 +37,45 @@ class BizCard extends HTMLElement {
     this.#frontStyle = document.createElement('style')
     document.head.append(this.#frontStyle)
 
+    this.#backCss = new CSSStyleSheet()
+    this.shadowRoot?.adoptedStyleSheets.push(this.#backCss)
+
+    this.#animeCss = new CSSStyleSheet()
+    this.shadowRoot?.adoptedStyleSheets.push(this.#animeCss)
+
+    this.#flipCss = new CSSStyleSheet()
+    this.shadowRoot?.adoptedStyleSheets.push(this.#flipCss)
+
+    window.addEventListener('popstate', () => {
+      this.#preferFlipCss()
+    })
+
     this.#ipafontCss = new CSSStyleSheet()
     this.shadowRoot?.adoptedStyleSheets.push(this.#ipafontCss)
+
+    this.onclick = this.#handleClick.bind(this)
   }
 
   connectedCallback() {
     this.#loadCss()
-    this.#preferFront()
+    this.#preferFaceCss()
+    this.#preferFlipCss()
     this.#render()
   }
 
   static get observedAttributes() {
-    return ['ipafont'] as const
+    return ['backside', 'ipafont'] as const
   }
 
   attributeChangedCallback(name: typeof BizCard.observedAttributes[number], _oldValue: string | null, value: string | null) {
     switch (name) {
+      case 'backside':
+        this.#backside = value !== null
+
+        this.#preferFaceCss()
+        this.#render()
+        break
+
       case 'ipafont':
         if (value !== null) {
           this.#preferIpaFonts()
@@ -58,6 +89,37 @@ class BizCard extends HTMLElement {
     }
   }
 
+  get #flipped() {
+    const search = new URLSearchParams(location.search)
+
+    return search.has('flipped')
+  }
+
+  #handleClick() {
+    // TODO: Improve conditions
+    if (this.#animeCss.cssRules.length === 0) {
+      return
+    }
+
+    this.#flip()
+  }
+
+  #flip() {
+    const search = new URLSearchParams(location.search)
+
+    if (!search.has('flipped')) {
+      search.append('flipped', '')
+    } else {
+      search.delete('flipped')
+    }
+
+    const url = new URL(location.href)
+    url.search = search.toString()
+
+    history.pushState(null, '', url)
+    window.dispatchEvent(new PopStateEvent('popstate'))
+  }
+
   #loadCss() {
     const css = new CSSStyleSheet()
     this.shadowRoot?.adoptedStyleSheets.push(css)
@@ -69,6 +131,8 @@ class BizCard extends HTMLElement {
       :host {
         background-color: ${ bgColor ?? 'white' };
         color: ${ color ?? 'black' };
+        backface-visibility: hidden;
+        position: absolute;
       }
 
       /* Size */
@@ -93,7 +157,7 @@ class BizCard extends HTMLElement {
 
       /* Ordinary */
       :host {
-        position: relative;
+        /* position: relative; */
       }
 
       ::slotted(*), .accounts {
@@ -138,7 +202,16 @@ class BizCard extends HTMLElement {
     `))
   }
 
+  #preferFaceCss() {
+    if (!this.#backside) {
+      this.#preferFront()
+    } else {
+      this.#preferBack()
+    }
+  }
+
   #preferFront() {
+    this.#backCss.replaceSync('')
     this.#frontCss.replaceSync(`
       ::slotted(qr-code) {
         /* Quarter of the card */
@@ -219,6 +292,56 @@ class BizCard extends HTMLElement {
     `))
   }
 
+  #preferBack() {
+    this.#frontCss.replaceSync('')
+    this.#backCss.replaceSync(`
+      :host {
+        font-size: 24pt;
+      }
+    `)
+  }
+
+  async #preferFlipCss() {
+    if (!this.#flipped) {
+      this.#preferNotFlipped()
+    } else {
+      this.#preferFlipped()
+    }
+
+    await delay(1000)
+    /* Transformed */
+
+    this.#animeCss.replaceSync(`
+      :host {
+        transition: transform 1s ease-in-out;
+      }
+    `)
+  }
+
+  #preferNotFlipped() {
+    this.#flipCss.replaceSync(`
+      :host(:not([backside])) {
+        transform: rotateY(360deg);
+      }
+
+      :host([backside]) {
+        transform: rotateY(180deg);
+      }
+    `)
+  }
+
+  #preferFlipped() {
+    this.#flipCss.replaceSync(`
+      :host(:not([backside])) {
+        transform: rotateY(540deg);
+      }
+
+      :host([backside]) {
+        transform: rotateY(360deg);
+      }
+    `)
+  }
+
   #preferIpaFonts() {
     this.#ipafontCss.replaceSync(`
       /* Fonts */
@@ -249,6 +372,14 @@ class BizCard extends HTMLElement {
   }
 
   #render() {
+    if (!this.#backside) {
+      this.#renderFront()
+    } else {
+      this.#renderBack()
+    }
+  }
+
+  #renderFront() {
     const range = new Range()
 
     const fragment = range.createContextualFragment(`
@@ -271,6 +402,16 @@ class BizCard extends HTMLElement {
       <div class="right-col">
         <slot name="qr-code"></slot>
       </div>
+    `)
+
+    this.shadowRoot?.replaceChildren(fragment)
+  }
+
+  #renderBack() {
+    const range = new Range()
+
+    const fragment = range.createContextualFragment(`
+      back face
     `)
 
     this.shadowRoot?.replaceChildren(fragment)
