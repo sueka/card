@@ -20,7 +20,3 @@ body {
   perspective: 300mm;
   perspective-origin: center;
 }
-
-biz-card {
-  box-shadow: darkslategray 0 0 16px;
-}

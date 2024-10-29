@@ -1,10 +1,10 @@
-import delay from "./delay.js"
+import delay from './delay.js'
 
 export {}
 
 /**
  * Defines:
- * <biz-card [backside] [ipafont] [color=Color] [bg-color=Color]>
+ * <biz-card [ipafont] [color=Color] [bg-color=Color]>
  *   [<ordinary- ... />]
  *   [<icon- ... />]
  *   [<title- ... />]
@@ -14,13 +14,12 @@ export {}
  *   [<twitter-sn ... />]
  *   [<github-username ... />]
  *   [<web-site ... />]
+ *   [<back-face ... />]
  * </biz-card>
  */
 class BizCard extends HTMLElement {
-  #backside: boolean
   #frontCss: CSSStyleSheet
   #frontStyle: HTMLStyleElement
-  #backCss: CSSStyleSheet
   #animeCss: CSSStyleSheet
   #flipCss: CSSStyleSheet
   #ipafontCss: CSSStyleSheet
@@ -29,16 +28,11 @@ class BizCard extends HTMLElement {
     super()
     this.attachShadow({ mode: 'open' })
 
-    this.#backside = this.hasAttribute('backside')
-
     this.#frontCss = new CSSStyleSheet()
     this.shadowRoot?.adoptedStyleSheets.push(this.#frontCss)
 
     this.#frontStyle = document.createElement('style')
     document.head.append(this.#frontStyle)
-
-    this.#backCss = new CSSStyleSheet()
-    this.shadowRoot?.adoptedStyleSheets.push(this.#backCss)
 
     this.#animeCss = new CSSStyleSheet()
     this.shadowRoot?.adoptedStyleSheets.push(this.#animeCss)
@@ -64,18 +58,11 @@ class BizCard extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['backside', 'ipafont'] as const
+    return ['ipafont'] as const
   }
 
   attributeChangedCallback(name: typeof BizCard.observedAttributes[number], _oldValue: string | null, value: string | null) {
     switch (name) {
-      case 'backside':
-        this.#backside = value !== null
-
-        this.#preferFaceCss()
-        this.#render()
-        break
-
       case 'ipafont':
         if (value !== null) {
           this.#preferIpaFonts()
@@ -129,14 +116,26 @@ class BizCard extends HTMLElement {
 
     css.replaceSync(`
       :host {
+        transform-style: preserve-3d;
+        box-shadow: 0 0 16px darkslategray;
+      }
+
+      .front {
+        transform: translateZ(0.1mm);
+      }
+
+      .back {
+        transform: rotateY(180deg) translateZ(0.1mm);
+      }
+
+      .front, .back {
         background-color: ${ bgColor ?? 'white' };
         color: ${ color ?? 'black' };
-        backface-visibility: hidden;
         position: absolute;
       }
 
       /* Size */
-      :host {
+      :host, .front, .back {
         min-width: 91mm;
         max-width: 91mm;
         min-height: 55mm;
@@ -144,19 +143,19 @@ class BizCard extends HTMLElement {
       }
 
       /* Layout */
-      :host {
+      .front {
         box-sizing: border-box;
         padding: 4mm;
       }
 
       /* Text */
-      :host {
+      .front {
         font-size: 9pt;
         font-feature-settings: 'pwid';
       }
 
       /* Ordinary */
-      :host {
+      .front {
         /* position: relative; */
       }
 
@@ -203,15 +202,6 @@ class BizCard extends HTMLElement {
   }
 
   #preferFaceCss() {
-    if (!this.#backside) {
-      this.#preferFront()
-    } else {
-      this.#preferBack()
-    }
-  }
-
-  #preferFront() {
-    this.#backCss.replaceSync('')
     this.#frontCss.replaceSync(`
       ::slotted(qr-code) {
         /* Quarter of the card */
@@ -225,7 +215,7 @@ class BizCard extends HTMLElement {
       }
 
       /* Layout */
-      :host {
+      .front {
         display: flex;
         justify-content: space-between;
         gap: 4mm;
@@ -279,6 +269,10 @@ class BizCard extends HTMLElement {
       .accounts ::slotted(*) {
         display: contents;
       }
+
+      .back {
+        display: flex;
+      }
     `)
 
     // FIXME: 本当はシャドウルートのスタイルシートで .accounts ::slotted(*)::part(account-info-inner) のようにしたかった。
@@ -290,15 +284,6 @@ class BizCard extends HTMLElement {
         grid-column: 1 / 3;
       }
     `))
-  }
-
-  #preferBack() {
-    this.#frontCss.replaceSync('')
-    this.#backCss.replaceSync(`
-      :host {
-        font-size: 24pt;
-      }
-    `)
   }
 
   async #preferFlipCss() {
@@ -320,24 +305,16 @@ class BizCard extends HTMLElement {
 
   #preferNotFlipped() {
     this.#flipCss.replaceSync(`
-      :host(:not([backside])) {
-        transform: rotateY(360deg);
-      }
-
-      :host([backside]) {
-        transform: rotateY(180deg);
+      :host {
+        transform: rotateY(0deg);
       }
     `)
   }
 
   #preferFlipped() {
     this.#flipCss.replaceSync(`
-      :host(:not([backside])) {
-        transform: rotateY(540deg);
-      }
-
-      :host([backside]) {
-        transform: rotateY(360deg);
+      :host {
+        transform: rotateY(180deg);
       }
     `)
   }
@@ -372,46 +349,33 @@ class BizCard extends HTMLElement {
   }
 
   #render() {
-    if (!this.#backside) {
-      this.#renderFront()
-    } else {
-      this.#renderBack()
-    }
-  }
-
-  #renderFront() {
     const range = new Range()
 
     const fragment = range.createContextualFragment(`
-      <slot name="ordinary"></slot>
-      <div class="left-col">
-        <div class="profile">
-          <div class="profile-header">
-            <slot name="icon"></slot>
-            <div class="profile-name">
-              <slot name="title"></slot>
-              <slot name="full-name"></slot>
+      <div class="front">
+        <slot name="ordinary"></slot>
+        <div class="left-col">
+          <div class="profile">
+            <div class="profile-header">
+              <slot name="icon"></slot>
+              <div class="profile-name">
+                <slot name="title"></slot>
+                <slot name="full-name"></slot>
+              </div>
             </div>
+            <slot name="bio"></slot>
           </div>
-          <slot name="bio"></slot>
+          <ul class="accounts">
+            <slot name="accounts"></slot>
+          </ul>
         </div>
-        <ul class="accounts">
-          <slot name="accounts"></slot>
-        </ul>
+        <div class="right-col">
+          <slot name="qr-code"></slot>
+        </div>
       </div>
-      <div class="right-col">
-        <slot name="qr-code"></slot>
+      <div class="back">
+        <slot name="back-face"></slot>
       </div>
-    `)
-
-    this.shadowRoot?.replaceChildren(fragment)
-  }
-
-  #renderBack() {
-    const range = new Range()
-
-    const fragment = range.createContextualFragment(`
-      back face
     `)
 
     this.shadowRoot?.replaceChildren(fragment)
