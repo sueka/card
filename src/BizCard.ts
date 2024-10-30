@@ -115,6 +115,7 @@ class BizCard extends HTMLElement {
     const bgColor = this.getAttribute('bg-color')
 
     css.replaceSync(`
+      /* Form */
       :host {
         transform-style: preserve-3d;
         box-shadow: 0 0 16px darkslategray;
@@ -126,6 +127,44 @@ class BizCard extends HTMLElement {
 
       .back {
         transform: rotateY(180deg) translateZ(0.1mm);
+      }
+
+      /* Edges */
+      :host {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .edge {
+        background-color: white;
+        position: absolute;
+      }
+
+      .edge.top, .edge.bottom {
+        height: 0.2mm;
+        width: 91mm;
+      }
+
+      .edge.dexter, .edge.sinister {
+        height: 55mm;
+        width: 0.2mm;
+      }
+
+      .edge.top {
+        transform: rotateX(90deg) translateZ(27.5mm);
+      }
+
+      .edge.bottom {
+        transform: rotateX(-90deg) translateZ(27.5mm);
+      }
+
+      .edge.dexter {
+        transform: rotateY(-90deg) translateZ(45.5mm);
+      }
+
+      .edge.sinister {
+        transform: rotateY(90deg) translateZ(45.5mm);
       }
 
       .front, .back {
@@ -376,6 +415,10 @@ class BizCard extends HTMLElement {
       <div class="back">
         <slot name="back-face"></slot>
       </div>
+      <div class="edge top"></div>
+      <div class="edge bottom"></div>
+      <div class="edge dexter"></div>
+      <div class="edge sinister"></div>
     `)
 
     this.shadowRoot?.replaceChildren(fragment)
