@@ -122,11 +122,11 @@ class BizCard extends HTMLElement {
       }
 
       .front {
-        transform: translateZ(0.1mm);
+        transform: translateZ(calc(var(--depth) / 2));
       }
 
       .back {
-        transform: rotateY(180deg) translateZ(0.1mm);
+        transform: rotateY(180deg) translateZ(calc(var(--depth) / 2));
       }
 
       /* Edges */
@@ -142,29 +142,29 @@ class BizCard extends HTMLElement {
       }
 
       .edge.top, .edge.bottom {
-        height: 0.2mm;
-        width: 91mm;
+        height: var(--depth);
+        width: var(--width);
       }
 
       .edge.dexter, .edge.sinister {
-        height: 55mm;
-        width: 0.2mm;
+        height: var(--height);
+        width: var(--depth);
       }
 
       .edge.top {
-        transform: rotateX(90deg) translateZ(27.5mm);
+        transform: rotateX(90deg) translateZ(calc(var(--height) / 2));
       }
 
       .edge.bottom {
-        transform: rotateX(-90deg) translateZ(27.5mm);
+        transform: rotateX(-90deg) translateZ(calc(var(--height) / 2));
       }
 
       .edge.dexter {
-        transform: rotateY(-90deg) translateZ(45.5mm);
+        transform: rotateY(-90deg) translateZ(calc(var(--width) / 2));
       }
 
       .edge.sinister {
-        transform: rotateY(90deg) translateZ(45.5mm);
+        transform: rotateY(90deg) translateZ(calc(var(--width) / 2));
       }
 
       .front, .back {
@@ -175,10 +175,10 @@ class BizCard extends HTMLElement {
 
       /* Size */
       :host, .front, .back {
-        min-width: 91mm;
-        max-width: 91mm;
-        min-height: 55mm;
-        max-height: 55mm;
+        min-width: var(--width);
+        max-width: var(--width);
+        min-height: var(--height);
+        max-height: var(--height);
       }
 
       /* Layout */
@@ -244,8 +244,8 @@ class BizCard extends HTMLElement {
     this.#frontCss.replaceSync(`
       ::slotted(qr-code) {
         /* Quarter of the card */
-        max-width: calc((91mm - 8mm) / 2);
-        max-height: calc((55mm - 8mm) / 2);
+        max-width: calc((var(--width) - 8mm) / 2);
+        max-height: calc((var(--height) - 8mm) / 2);
       }
 
       .accounts {

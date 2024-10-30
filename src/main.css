@@ -1,3 +1,9 @@
+:root {
+  --height: 55mm;
+  --width: 91mm;
+  --depth: 0.2mm;
+}
+
 html, body {
   height: 100%;
 }

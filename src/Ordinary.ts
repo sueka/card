@@ -79,7 +79,7 @@ class Ordinary extends HTMLElement {
 
     this.#chiefCss.replaceSync(`
       .ordinary {
-        width: 91mm;
+        width: var(--width);
         height: ${ size };
       }
     `)
