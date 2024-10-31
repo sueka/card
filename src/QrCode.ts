@@ -1,4 +1,5 @@
 import QRCode, { toString } from 'qrcode'
+import assert from './assert.js'
 
 /**
  * Defines <qr-code [rounded] content=String [dark=HexColor] [light=HexColor]></qr-code>.
@@ -93,10 +94,24 @@ class QrCode extends HTMLElement {
 
   #render() {
     const range = new Range()
+    let fragment: DocumentFragment
+    const link = this.hasAttribute('link')
 
-    const fragment = range.createContextualFragment(`
-      <img class="qr-code" src="data:image/svg+xml,${ encodeURIComponent(this.#qrCodeSvg) }" />
-    `)
+    if (!link) {
+      fragment = range.createContextualFragment(`
+        <img class="qr-code" src="data:image/svg+xml,${ encodeURIComponent(this.#qrCodeSvg) }" />
+      `)
+    } else {
+      const content = this.getAttribute('content')
+      assert(content !== null)
+      assert(URL.canParse(content))
+
+      fragment = range.createContextualFragment(`
+        <a href="${ content }">
+          <img class="qr-code" src="data:image/svg+xml,${ encodeURIComponent(this.#qrCodeSvg) }" />
+        </a>
+      `)
+    }
 
     this.shadowRoot?.replaceChildren(fragment)
   }
