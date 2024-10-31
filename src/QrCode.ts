@@ -1,4 +1,4 @@
-import { toString } from 'qrcode'
+import QRCode, { toString } from 'qrcode'
 
 /**
  * Defines <qr-code [rounded] content=String [dark=HexColor] [light=HexColor]></qr-code>.
@@ -6,6 +6,7 @@ import { toString } from 'qrcode'
 class QrCode extends HTMLElement {
   #roundedQrCodeCss: CSSStyleSheet
   #qrCodeSvg!: string
+  #size!: number
 
   constructor() {
     super()
@@ -35,8 +36,10 @@ class QrCode extends HTMLElement {
         const light = this.getAttribute('light') ?? undefined
 
         if (content !== null) {
+          this.#size = QRCode.create(content).modules.size
           this.#qrCodeSvg = await toString(content, { type: 'svg', color: { dark, light } })
 
+          this.#loadCss()
           this.#render()
         }
         break
@@ -73,9 +76,9 @@ class QrCode extends HTMLElement {
 
     css.replaceSync(`
       :host {
-        /* 4 dots/cell, QR Code version 11, ECC level M, 600 dpi */
-        min-width: calc(4px * 69 * 96 / 600);
-        min-height: calc(4px * 69 * 96 / 600);
+        /* 4 dots/cell, 4 cell margin, 300 dpi */
+        min-width: calc(4px * (${ this.#size } + 8) * 96 / 300);
+        min-height: calc(4px * (${ this.#size } + 8) * 96 / 300);
       }
 
       :host {
