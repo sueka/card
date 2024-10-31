@@ -47,7 +47,7 @@ class BizCard extends HTMLElement {
     this.#ipafontCss = new CSSStyleSheet()
     this.shadowRoot?.adoptedStyleSheets.push(this.#ipafontCss)
 
-    this.onclick = this.#handleClick.bind(this)
+    this.ondblclick = this.#handleDblClick.bind(this)
   }
 
   connectedCallback() {
@@ -82,7 +82,7 @@ class BizCard extends HTMLElement {
     return search.has('flipped')
   }
 
-  #handleClick() {
+  #handleDblClick() {
     // TODO: Improve conditions
     if (this.#animeCss.cssRules.length === 0) {
       return
