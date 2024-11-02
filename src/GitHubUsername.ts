@@ -2,10 +2,15 @@
  * Defines <github-username [squared] [logo-color=Color]>String</github-username>.
  */
 class GitHubUsername extends HTMLElement {
+  #css: CSSStyleSheet
+
   constructor() {
     super()
     this.attachShadow({ mode: 'open' })
     this.slot = 'accounts'
+
+    this.#css = new CSSStyleSheet()
+    this.shadowRoot?.adoptedStyleSheets.push(this.#css)
 
     const observer = new MutationObserver(() => {
       this.#render()
@@ -40,15 +45,12 @@ class GitHubUsername extends HTMLElement {
   }
 
   #loadCss() {
-    const css = new CSSStyleSheet()
-    this.shadowRoot?.adoptedStyleSheets.push(css)
-
     const squared = this.hasAttribute('squared')
     const logoColor = this.getAttribute('logo-color')
 
     const faUnicode = !squared ? '\\f09b' : '\\f092'
 
-    css.replaceSync(`
+    this.#css.replaceSync(`
       .with-icon {
         display: grid;
         grid-column: 1 / 3;

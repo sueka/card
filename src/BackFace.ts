@@ -6,10 +6,15 @@ export {}
  * </back-face>
  */
 class BackFace extends HTMLElement {
+  #css: CSSStyleSheet
+
   constructor() {
     super()
     this.attachShadow({ mode: 'open' })
     this.slot = 'back-face'
+
+    this.#css = new CSSStyleSheet()
+    this.shadowRoot?.adoptedStyleSheets.push(this.#css)
   }
 
   connectedCallback() {
@@ -18,13 +23,10 @@ class BackFace extends HTMLElement {
   }
 
   #loadCss() {
-    const css = new CSSStyleSheet()
-    this.shadowRoot?.adoptedStyleSheets.push(css)
-
     const color = this.getAttribute('color')
     const bgColor = this.getAttribute('bg-color')
 
-    css.replaceSync(`
+    this.#css.replaceSync(`
       :host {
         flex-grow: 1;
         background-color: ${ bgColor ?? 'transparent' };

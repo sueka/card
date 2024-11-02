@@ -18,6 +18,8 @@ export {}
  * </biz-card>
  */
 class BizCard extends HTMLElement {
+  #css: CSSStyleSheet
+  #style: HTMLStyleElement
   #frontCss: CSSStyleSheet
   #frontStyle: HTMLStyleElement
   #animeCss: CSSStyleSheet
@@ -27,6 +29,12 @@ class BizCard extends HTMLElement {
   constructor() {
     super()
     this.attachShadow({ mode: 'open' })
+
+    this.#css = new CSSStyleSheet()
+    this.shadowRoot?.adoptedStyleSheets.push(this.#css)
+
+    this.#style = document.createElement('style')
+    document.head.append(this.#style)
 
     this.#frontCss = new CSSStyleSheet()
     this.shadowRoot?.adoptedStyleSheets.push(this.#frontCss)
@@ -108,13 +116,10 @@ class BizCard extends HTMLElement {
   }
 
   #loadCss() {
-    const css = new CSSStyleSheet()
-    this.shadowRoot?.adoptedStyleSheets.push(css)
-
     const color = this.getAttribute('color')
     const bgColor = this.getAttribute('bg-color')
 
-    css.replaceSync(`
+    this.#css.replaceSync(`
       /* Form */
       :host {
         transform-style: preserve-3d;
@@ -207,10 +212,7 @@ class BizCard extends HTMLElement {
       }
     `)
 
-    const style = document.createElement('style')
-    document.head.append(style)
-
-    style.replaceChildren(document.createTextNode(`
+    this.#style.replaceChildren(document.createTextNode(`
       /* Link */
       :link {
         color: LinkText;
@@ -366,6 +368,7 @@ class BizCard extends HTMLElement {
       }
     `)
 
+    // NOTE: No need to reject the at-font-face rule.
     const style = document.createElement('style')
 
     style.append(document.createTextNode(`

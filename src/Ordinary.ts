@@ -4,12 +4,16 @@ import assert from './assert.js'
  * Defines <ordinary- [type="chief" size=Length] color=Color></ordinary->.
  */
 class Ordinary extends HTMLElement {
+  #css: CSSStyleSheet
   #chiefCss: CSSStyleSheet
 
   constructor() {
     super()
     this.attachShadow({ mode: 'open' })
     this.slot = 'ordinary'
+
+    this.#css = new CSSStyleSheet()
+    this.shadowRoot?.adoptedStyleSheets.push(this.#css)
 
     this.#chiefCss = new CSSStyleSheet()
     this.shadowRoot?.adoptedStyleSheets.push(this.#chiefCss)
@@ -53,12 +57,9 @@ class Ordinary extends HTMLElement {
   }
 
   #loadCss() {
-    const css = new CSSStyleSheet()
-    this.shadowRoot?.adoptedStyleSheets.push(css)
-
     const color = this.getAttribute('color')!
 
-    css.replaceSync(`
+    this.#css.replaceSync(`
       :host {
         position: absolute;
         top: 0;

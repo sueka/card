@@ -5,6 +5,7 @@ import assert from './assert.js'
  * Defines <qr-code [rounded] content=String [dark=HexColor] [light=HexColor]></qr-code>.
  */
 class QrCode extends HTMLElement {
+  #css: CSSStyleSheet
   #roundedQrCodeCss: CSSStyleSheet
   #qrCodeSvg!: string
   #size!: number
@@ -13,6 +14,9 @@ class QrCode extends HTMLElement {
     super()
     this.attachShadow({ mode: 'open' })
     this.slot = 'qr-code'
+
+    this.#css = new CSSStyleSheet()
+    this.shadowRoot?.adoptedStyleSheets.push(this.#css)
 
     this.#roundedQrCodeCss = new CSSStyleSheet()
     this.shadowRoot?.adoptedStyleSheets.push(this.#roundedQrCodeCss)
@@ -58,24 +62,8 @@ class QrCode extends HTMLElement {
     }
   }
 
-  #preferRoundedQrCode() {
-    this.#roundedQrCodeCss.replaceSync(`
-      .qr-code {
-        border-radius: 5%;
-        /* clip-path: rect(auto 0 auto 100% round 5%); */
-      }
-    `)
-  }
-
-  #rejectRoundedQrCode() {
-    this.#roundedQrCodeCss.replaceSync('')
-  }
-
   #loadCss() {
-    const css = new CSSStyleSheet()
-    this.shadowRoot?.adoptedStyleSheets.push(css)
-
-    css.replaceSync(`
+    this.#css.replaceSync(`
       :host {
         /* 4 dots/cell, 4 cell margin, 300 dpi */
         min-width: calc(4px * (${ this.#size } + 8) * 96 / 300);
@@ -90,6 +78,19 @@ class QrCode extends HTMLElement {
         display: block;
       }
     `)
+  }
+
+  #preferRoundedQrCode() {
+    this.#roundedQrCodeCss.replaceSync(`
+      .qr-code {
+        border-radius: 5%;
+        /* clip-path: rect(auto 0 auto 100% round 5%); */
+      }
+    `)
+  }
+
+  #rejectRoundedQrCode() {
+    this.#roundedQrCodeCss.replaceSync('')
   }
 
   #render() {

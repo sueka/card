@@ -2,10 +2,15 @@
  * Defines <twitter-sn [x] [squared] [logo-color=Color]>String</twitter-sn>.
  */
 class TwitterSn extends HTMLElement {
+  #css: CSSStyleSheet
+
   constructor() {
     super()
     this.attachShadow({ mode: 'open' })
     this.slot = 'accounts'
+
+    this.#css = new CSSStyleSheet()
+    this.shadowRoot?.adoptedStyleSheets.push(this.#css)
 
     const observer = new MutationObserver(() => {
       this.#render()
@@ -41,9 +46,6 @@ class TwitterSn extends HTMLElement {
   }
 
   #loadCss() {
-    const css = new CSSStyleSheet()
-    this.shadowRoot?.adoptedStyleSheets.push(css)
-
     const twitter = !this.hasAttribute('x')
     const squared = this.hasAttribute('squared')
     const logoColor = this.getAttribute('logo-color')
@@ -52,7 +54,7 @@ class TwitterSn extends HTMLElement {
       ? (!squared ? '\\f099' : '\\f081')
       : (!squared ? '\\e61b' : '\\e61a')
 
-    css.replaceSync(`
+    this.#css.replaceSync(`
       .with-icon {
         display: grid;
         grid-column: 1 / 3;

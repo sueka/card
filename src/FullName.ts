@@ -2,10 +2,15 @@
  * Defines <full-name [read-as=String]>String</full-name>.
  */
 class FullName extends HTMLElement {
+  #css: CSSStyleSheet
+
   constructor() {
     super()
     this.attachShadow({ mode: 'open' })
     this.slot = 'full-name'
+
+    this.#css = new CSSStyleSheet()
+    this.shadowRoot?.adoptedStyleSheets.push(this.#css)
 
     const observer = new MutationObserver(() => {
       this.#render()
@@ -39,10 +44,7 @@ class FullName extends HTMLElement {
   }
 
   #loadCss() {
-    const css = new CSSStyleSheet()
-    this.shadowRoot?.adoptedStyleSheets.push(css)
-
-    css.replaceSync(`
+    this.#css.replaceSync(`
       :host {
         line-height: 1;
 

@@ -4,12 +4,16 @@ export {}
  * Defines <icon- [rounded] src=Url></icon->.
  */
 class Icon extends HTMLElement {
+  #css: CSSStyleSheet
   #roundedIconCss: CSSStyleSheet
 
   constructor() {
     super()
     this.attachShadow({ mode: 'open' })
     this.slot = 'icon'
+
+    this.#css = new CSSStyleSheet()
+    this.shadowRoot?.adoptedStyleSheets.push(this.#css)
 
     this.#roundedIconCss = new CSSStyleSheet()
     this.shadowRoot?.adoptedStyleSheets.push(this.#roundedIconCss)
@@ -39,24 +43,8 @@ class Icon extends HTMLElement {
     }
   }
 
-  #preferRoundedIcon() {
-    this.#roundedIconCss.replaceSync(`
-      .icon {
-        border-radius: 5%;
-        /* clip-path: rect(auto 0 auto 100% round 5%); */
-      }
-    `)
-  }
-
-  #rejectRoundedIcon() {
-    this.#roundedIconCss.replaceSync('')
-  }
-
   #loadCss() {
-    const css = new CSSStyleSheet()
-    this.shadowRoot?.adoptedStyleSheets.push(css)
-
-    css.replaceSync(`
+    this.#css.replaceSync(`
       :host {
         display: inline-block;
 
@@ -77,6 +65,19 @@ class Icon extends HTMLElement {
         height: 100%;
       }
     `)
+  }
+
+  #preferRoundedIcon() {
+    this.#roundedIconCss.replaceSync(`
+      .icon {
+        border-radius: 5%;
+        /* clip-path: rect(auto 0 auto 100% round 5%); */
+      }
+    `)
+  }
+
+  #rejectRoundedIcon() {
+    this.#roundedIconCss.replaceSync('')
   }
 
   #render() {
