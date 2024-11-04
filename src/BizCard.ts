@@ -11,9 +11,7 @@ export {}
  *   <full-name ... />
  *   [<bio-info ... />]
  *   [<qr-code ... />]
- *   [<twitter-sn ... />]
- *   [<github-username ... />]
- *   [<web-site ... />]
+ *   [<account-list ... />]
  *   [<back-face ... />]
  * </biz-card>
  */
@@ -203,7 +201,7 @@ class BizCard extends HTMLElement {
         /* position: relative; */
       }
 
-      ::slotted(*), .accounts {
+      ::slotted(*) {
         position: relative;
       }
 
@@ -250,7 +248,7 @@ class BizCard extends HTMLElement {
         max-height: calc((var(--height) - 8mm) / 2);
       }
 
-      .accounts {
+      ::slotted(account-list) {
         /* brevier */
         font-size: 8pt;
       }
@@ -292,39 +290,10 @@ class BizCard extends HTMLElement {
         flex-direction: column;
       }
 
-      .accounts {
-        display: grid;
-        grid-template-columns: auto 1fr;
-        gap: 0.5mm;
-
-        /* Reset <ul> */
-        margin-top: 0;
-        margin-bottom: 0;
-        padding-left: 0;
-      }
-
-      .accounts > li {
-        display: contents;
-      }
-
-      .accounts ::slotted(*) {
-        display: contents;
-      }
-
       .back {
         display: flex;
       }
     `)
-
-    // FIXME: 本当はシャドウルートのスタイルシートで .accounts ::slotted(*)::part(account-info-inner) のようにしたかった。
-    this.#frontStyle.replaceChildren(document.createTextNode(`
-      /* Layout */
-      ::part(account-info-inner) {
-        display: grid;
-        grid-template-columns: subgrid; /* in .accounts */
-        grid-column: 1 / 3;
-      }
-    `))
   }
 
   async #preferFlipCss() {
@@ -407,9 +376,7 @@ class BizCard extends HTMLElement {
             </div>
             <slot name="bio"></slot>
           </div>
-          <ul class="accounts">
-            <slot name="accounts"></slot>
-          </ul>
+          <slot name="accounts"></slot>
         </div>
         <div class="right-col">
           <slot name="qr-code"></slot>

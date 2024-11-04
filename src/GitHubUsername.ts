@@ -7,7 +7,7 @@ class GitHubUsername extends HTMLElement {
   constructor() {
     super()
     this.attachShadow({ mode: 'open' })
-    this.slot = 'accounts'
+    this.slot = 'account'
 
     this.#css = new CSSStyleSheet()
     this.shadowRoot?.adoptedStyleSheets.push(this.#css)
@@ -51,6 +51,10 @@ class GitHubUsername extends HTMLElement {
     const faUnicode = !squared ? '\\f09b' : '\\f092'
 
     this.#css.replaceSync(`
+      :host {
+        display: contents;
+      }
+
       .with-icon {
         display: grid;
         grid-column: 1 / 3;

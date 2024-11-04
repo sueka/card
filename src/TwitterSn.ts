@@ -7,7 +7,7 @@ class TwitterSn extends HTMLElement {
   constructor() {
     super()
     this.attachShadow({ mode: 'open' })
-    this.slot = 'accounts'
+    this.slot = 'account'
 
     this.#css = new CSSStyleSheet()
     this.shadowRoot?.adoptedStyleSheets.push(this.#css)
@@ -55,6 +55,10 @@ class TwitterSn extends HTMLElement {
       : (!squared ? '\\e61b' : '\\e61a')
 
     this.#css.replaceSync(`
+      :host {
+        display: contents;
+      }
+
       .with-icon {
         display: grid;
         grid-column: 1 / 3;

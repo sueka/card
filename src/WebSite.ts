@@ -7,7 +7,7 @@ class WebSite extends HTMLElement {
   constructor() {
     super()
     this.attachShadow({ mode: 'open' })
-    this.slot = 'accounts'
+    this.slot = 'account'
 
     this.#css = new CSSStyleSheet()
     this.shadowRoot?.adoptedStyleSheets.push(this.#css)
@@ -49,6 +49,10 @@ class WebSite extends HTMLElement {
     const faUnicode = '\\f015'
 
     this.#css.replaceSync(`
+      :host {
+        display: contents;
+      }
+
       .with-icon {
         display: grid;
         grid-column: 1 / 3;
