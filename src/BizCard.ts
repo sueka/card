@@ -264,6 +264,7 @@ class BizCard extends HTMLElement {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
+        min-width: 0;
       }
 
       .right-col {
@@ -281,13 +282,18 @@ class BizCard extends HTMLElement {
       .profile-header {
         display: flex;
         flex-direction: row;
-        align-items: flex-end;
+        align-items: stretch;
         gap: 3mm;
       }
 
       .profile-name {
         display: flex;
         flex-direction: column;
+        justify-content: space-between;
+      }
+
+      slot[name=title] {
+        display: inline;
       }
 
       .back {

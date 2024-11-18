@@ -49,7 +49,7 @@ class FullName extends HTMLElement {
         line-height: 1;
 
         /* 8-by-8 dots type, 20/20 vision, from 3 m */
-        font-size: calc(8 * 3 * 1000mm * tan(1deg / 60));
+        font-size: calc(8 * 3000mm * tan(1deg / (20/20) / 60));
       }
 
       .rb {
