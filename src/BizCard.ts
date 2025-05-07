@@ -1,4 +1,4 @@
-import delay from './delay.js'
+import Rotational from './Rotational.js'
 
 export {}
 
@@ -20,8 +20,6 @@ class BizCard extends HTMLElement {
   #style: HTMLStyleElement
   #frontCss: CSSStyleSheet
   #frontStyle: HTMLStyleElement
-  #animeCss: CSSStyleSheet
-  #flipCss: CSSStyleSheet
   #ipafontCss: CSSStyleSheet
 
   constructor() {
@@ -40,26 +38,13 @@ class BizCard extends HTMLElement {
     this.#frontStyle = document.createElement('style')
     document.head.append(this.#frontStyle)
 
-    this.#animeCss = new CSSStyleSheet()
-    this.shadowRoot?.adoptedStyleSheets.push(this.#animeCss)
-
-    this.#flipCss = new CSSStyleSheet()
-    this.shadowRoot?.adoptedStyleSheets.push(this.#flipCss)
-
-    window.addEventListener('popstate', () => {
-      this.#preferFlipCss()
-    })
-
     this.#ipafontCss = new CSSStyleSheet()
     this.shadowRoot?.adoptedStyleSheets.push(this.#ipafontCss)
-
-    this.ondblclick = this.#handleDblClick.bind(this)
   }
 
   connectedCallback() {
     this.#loadCss()
     this.#preferFaceCss()
-    this.#preferFlipCss()
     this.#render()
   }
 
@@ -82,37 +67,6 @@ class BizCard extends HTMLElement {
     }
   }
 
-  get #flipped() {
-    const search = new URLSearchParams(location.search)
-
-    return search.has('flipped')
-  }
-
-  #handleDblClick() {
-    // TODO: Improve conditions
-    if (this.#animeCss.cssRules.length === 0) {
-      return
-    }
-
-    this.#flip()
-  }
-
-  #flip() {
-    const search = new URLSearchParams(location.search)
-
-    if (!search.has('flipped')) {
-      search.append('flipped', '')
-    } else {
-      search.delete('flipped')
-    }
-
-    const url = new URL(location.href)
-    url.search = search.toString()
-
-    history.pushState(null, '', url)
-    window.dispatchEvent(new PopStateEvent('popstate'))
-  }
-
   #loadCss() {
     const color = this.getAttribute('color')
     const bgColor = this.getAttribute('bg-color')
@@ -121,7 +75,6 @@ class BizCard extends HTMLElement {
       /* Form */
       :host {
         transform-style: preserve-3d;
-        box-shadow: 0 0 16px darkslategray;
       }
 
       .front {
@@ -302,39 +255,6 @@ class BizCard extends HTMLElement {
     `)
   }
 
-  async #preferFlipCss() {
-    if (!this.#flipped) {
-      this.#preferNotFlipped()
-    } else {
-      this.#preferFlipped()
-    }
-
-    await delay(1000)
-    /* Transformed */
-
-    this.#animeCss.replaceSync(`
-      :host {
-        transition: transform 1s ease-in-out;
-      }
-    `)
-  }
-
-  #preferNotFlipped() {
-    this.#flipCss.replaceSync(`
-      :host {
-        transform: rotateY(0deg);
-      }
-    `)
-  }
-
-  #preferFlipped() {
-    this.#flipCss.replaceSync(`
-      :host {
-        transform: rotateY(180deg);
-      }
-    `)
-  }
-
   #preferIpaFonts() {
     this.#ipafontCss.replaceSync(`
       /* Fonts */
@@ -401,4 +321,4 @@ class BizCard extends HTMLElement {
   }
 }
 
-customElements.define('biz-card', BizCard)
+customElements.define('biz-card', Rotational(BizCard))
