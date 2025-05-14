@@ -90,7 +90,8 @@ export default function Rotational<T extends Constructor<HTMLElement>> (BaseClas
     }
 
     #handleWheel(event: WheelEvent) {
-      this.#rotation = this.#rotation.roll(event.deltaY * Math.PI / 180)
+      const dampedDelta = Math.sign(event.deltaY) * Math.min(Math.abs(event.deltaY), 50)
+      this.#rotation = this.#rotation.roll(dampedDelta * Math.PI / 180)
       this.#applyRotation()
 
       if (this.#timerId != null) {
