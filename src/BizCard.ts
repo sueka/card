@@ -13,6 +13,7 @@ export {}
  *   [<qr-code ... />]
  *   [<account-list ... />]
  *   [<back-face ... />]
+ *   [<braille-guide ... />]
  * </biz-card>
  */
 class BizCard extends HTMLElement {
@@ -81,7 +82,7 @@ class BizCard extends HTMLElement {
         transform: translateZ(calc(var(--depth) / 2));
       }
 
-      .back {
+      .back, .braille {
         transform: rotateY(180deg) translateZ(calc(var(--depth) / 2));
       }
 
@@ -130,7 +131,7 @@ class BizCard extends HTMLElement {
       }
 
       /* Size */
-      :host, .front, .back {
+      :host, .front, .back, .braille {
         min-width: var(--width);
         max-width: var(--width);
         min-height: var(--height);
@@ -310,6 +311,9 @@ class BizCard extends HTMLElement {
       </div>
       <div class="back">
         <slot name="back-face"></slot>
+      </div>
+      <div class="braille">
+        <slot name="braille-guide"></slot>
       </div>
       <div class="edge top"></div>
       <div class="edge bottom"></div>
