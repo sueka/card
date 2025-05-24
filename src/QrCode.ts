@@ -3,13 +3,14 @@ import assert from './assert.js'
 import Standaloneable from './Standaloneable.js'
 
 /**
- * Defines <qr-code [rounded] content=String [dark=HexColor] [light=HexColor]></qr-code>.
+ * Defines <qr-code [rounded] [link] content=String [dark=HexColor] [light=HexColor]></qr-code>.
  */
 class QrCode extends HTMLElement {
   #css: CSSStyleSheet
   #roundedQrCodeCss: CSSStyleSheet
   #qrCodeSvg!: string
   #size!: number
+  #isLink!: boolean
 
   constructor() {
     super()
@@ -29,7 +30,7 @@ class QrCode extends HTMLElement {
   }
 
   static get observedAttributes() {
-    return ['content', 'dark', 'light', 'rounded'] as const
+    return ['content', 'dark', 'light', 'rounded', 'link'] as const
   }
 
   async attributeChangedCallback(name: typeof QrCode.observedAttributes[number], _oldValue: string | null, value: string | null) {
@@ -56,6 +57,11 @@ class QrCode extends HTMLElement {
         } else {
           this.#rejectRoundedQrCode()
         }
+        break
+
+      case 'link':
+        this.#isLink = this.hasAttribute('link')
+        this.#render()
         break
 
       default:
@@ -99,9 +105,8 @@ class QrCode extends HTMLElement {
   #render() {
     const range = new Range()
     let fragment: DocumentFragment
-    const link = this.hasAttribute('link') // TODO
 
-    if (!link) {
+    if (!this.#isLink) {
       fragment = range.createContextualFragment(`
         <img class="qr-code" src="data:image/svg+xml,${ encodeURIComponent(this.#qrCodeSvg) }" />
       `)
