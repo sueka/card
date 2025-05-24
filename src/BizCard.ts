@@ -130,6 +130,10 @@ class BizCard extends HTMLElement {
         position: absolute;
       }
 
+      .braille {
+        pointer-events: none;
+      }
+
       /* Size */
       :host, .front, .back, .braille {
         min-width: var(--width);

@@ -3,6 +3,7 @@ export {}
 /**
  * Defines:
  * <back-face [color=Color] [bg-color=Color]>
+ *   NodeList
  * </back-face>
  */
 class BackFace extends HTMLElement {
@@ -41,9 +42,7 @@ class BackFace extends HTMLElement {
     const range = new Range()
 
     const fragment = range.createContextualFragment(`
-      <div>
-        back face
-      </div>
+      <slot></slot>
     `)
 
     this.shadowRoot?.replaceChildren(fragment)

@@ -1,5 +1,6 @@
 import QRCode, { toString } from 'qrcode'
 import assert from './assert.js'
+import Standaloneable from './Standaloneable.js'
 
 /**
  * Defines <qr-code [rounded] content=String [dark=HexColor] [light=HexColor]></qr-code>.
@@ -75,7 +76,9 @@ class QrCode extends HTMLElement {
       }
 
       .qr-code {
-        display: block;
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
       }
     `)
   }
@@ -96,7 +99,7 @@ class QrCode extends HTMLElement {
   #render() {
     const range = new Range()
     let fragment: DocumentFragment
-    const link = this.hasAttribute('link')
+    const link = this.hasAttribute('link') // TODO
 
     if (!link) {
       fragment = range.createContextualFragment(`
@@ -118,4 +121,4 @@ class QrCode extends HTMLElement {
   }
 }
 
-customElements.define('qr-code', QrCode)
+customElements.define('qr-code', Standaloneable(QrCode))
