@@ -75,6 +75,11 @@ class QrCode extends HTMLElement {
         /* 4 dots/cell, 4 cell margin, 300 dpi */
         min-width: calc(4px * (${ this.#size } + 8) * 96 / 300);
         min-height: calc(4px * (${ this.#size } + 8) * 96 / 300);
+
+        /* Fit to the card */
+        display: inline-block;
+        width: min(var(--width) - 8mm, var(--height) - 8mm);
+        height: min(var(--width) - 8mm, var(--height) - 8mm);
       }
 
       :host {
