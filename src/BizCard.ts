@@ -202,8 +202,8 @@ class BizCard extends HTMLElement {
     this.#frontCss.replaceSync(`
       ::slotted(qr-code) {
         /* Quarter of the card */
-        max-width: calc((var(--width) - 8mm) / 2);
-        max-height: calc((var(--height) - 8mm) / 2);
+        width: min((var(--width) - 8mm) / 2, (var(--height) - 8mm) / 2);
+        height: min((var(--width) - 8mm) / 2, (var(--height) - 8mm) / 2);
       }
 
       ::slotted(account-list) {
