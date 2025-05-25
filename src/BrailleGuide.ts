@@ -22,25 +22,6 @@ class BrailleGuide extends HTMLElement {
     this.#render()
   }
 
-  static get observedAttributes() {
-    return ['print-only'] as const
-  }
-
-  attributeChangedCallback(name: typeof BrailleGuide.observedAttributes[number], _oldValue: string | null, value: string | null) {
-    switch (name) {
-      case 'print-only':
-        if (value !== null) {
-          this.#preferPrintOnly()
-        } else {
-          this.#rejectPrintOnly()
-        }
-        break
-
-      default:
-        name satisfies never
-    }
-  }
-
   #loadCss() {
     // NOTE: Noto Sans Symbols 2 を使用する場合、JIS T 0921:2017 に準拠するには、font-size と line-height を次の範囲に収める必要がある:
     // 8.4043636364 mm < font-size < 11.3614545455 mm
@@ -60,25 +41,13 @@ class BrailleGuide extends HTMLElement {
         width: 100%;
         height: 100%;
       }
-    `)
-  }
 
-  #preferPrintOnly() {
-    this.#printOnlyCss.replaceSync(`
-      :host {
-        display: none;
-      }
-
-      @media print {
-        :host {
-          display: revert;
+      @media screen {
+        :host([print-only]) {
+          display: none;
         }
       }
     `)
-  }
-
-  #rejectPrintOnly() {
-    this.#printOnlyCss.replaceSync('')
   }
 
   #render() {
