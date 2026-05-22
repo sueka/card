@@ -1,4 +1,4 @@
-import IPosition from './IPosition'
+import type IPosition from './IPosition'
 
 export default class Vector3d {
   private constructor(

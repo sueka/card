@@ -1,4 +1,4 @@
-type Constructor<T = {}> = new (...args: any[]) => T
+type Constructor<T> = new (...args: any[]) => T
 
 interface CustomHTMLElement extends HTMLElement {
   connectedCallback?(): void
@@ -9,7 +9,7 @@ interface CustomElementConstructor extends Constructor<CustomHTMLElement> {
   observedAttributes?: readonly string[]
 }
 
-export default function Standaloneable<T extends CustomElementConstructor> (BaseClass: T) {
+export default function Standaloneable<T extends CustomElementConstructor>(BaseClass: T) {
   return class extends BaseClass {
     #slotName: string
 

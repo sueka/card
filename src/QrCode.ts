@@ -1,4 +1,4 @@
-import QRCode, { toString } from 'qrcode'
+import QRCode from 'qrcode'
 import assert from './assert.js'
 import Standaloneable from './Standaloneable.js'
 
@@ -37,19 +37,20 @@ class QrCode extends HTMLElement {
     switch (name) {
       case 'content':
       case 'dark':
-      case 'light':
+      case 'light': {
         const content = this.getAttribute('content')
         const dark = this.getAttribute('dark') ?? undefined
         const light = this.getAttribute('light') ?? undefined
 
         if (content !== null) {
           this.#size = QRCode.create(content).modules.size
-          this.#qrCodeSvg = await toString(content, { type: 'svg', color: { dark, light } })
+          this.#qrCodeSvg = await QRCode.toString(content, { type: 'svg', color: { dark, light } })
 
           this.#loadCss()
           this.#render()
         }
         break
+      }
 
       case 'rounded':
         if (value !== null) {

@@ -35,7 +35,7 @@ class Ordinary extends HTMLElement {
         break
 
       case 'type':
-      case 'size':
+      case 'size': {
         const typ = this.getAttribute('type')
         assert(typ === 'chief')
 
@@ -50,6 +50,7 @@ class Ordinary extends HTMLElement {
             typ satisfies never
         }
         break
+      }
 
       default:
         name satisfies never

@@ -3,7 +3,7 @@ import Quaternion from './Quaternion.js'
 import Vector3d from './Vector3d.js'
 import assert from './assert.js'
 
-type Constructor<T = {}> = new (...args: any[]) => T
+type Constructor<T> = new (...args: any[]) => T
 
 export default function Rotational<T extends Constructor<HTMLElement>> (BaseClass: T) {
   return class extends BaseClass {
