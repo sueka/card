@@ -5,8 +5,13 @@ import assert from './assert.js'
 
 type Constructor<T> = new (...args: any[]) => T
 
-export default function Rotational<T extends Constructor<HTMLElement>> (BaseClass: T) {
+interface CustomHTMLElement extends HTMLElement {
+  connectedCallback?(): void
+}
+
+export default function Rotational<T extends Constructor<CustomHTMLElement>> (BaseClass: T) {
   return class extends BaseClass {
+    #touchActionCss: CSSStyleSheet
     #rotationCss: CSSStyleSheet
     #rotation = Quaternion.neutral
     #timerId: number | null = null
@@ -18,6 +23,9 @@ export default function Rotational<T extends Constructor<HTMLElement>> (BaseClas
 
     constructor(...args: any[]) {
       super(...args)
+
+      this.#touchActionCss = new CSSStyleSheet()
+      this.shadowRoot?.adoptedStyleSheets.push(this.#touchActionCss)
 
       this.#rotationCss = new CSSStyleSheet()
       this.shadowRoot?.adoptedStyleSheets.push(this.#rotationCss)
@@ -37,6 +45,11 @@ export default function Rotational<T extends Constructor<HTMLElement>> (BaseClas
       globalThis.addEventListener('touchmove', this.#handlePinch.bind(this), { signal })
       globalThis.addEventListener('touchend', this.#handlePinchEnd.bind(this), { signal })
       globalThis.addEventListener('touchcancel', this.#handlePinchEnd.bind(this), { signal })
+    }
+
+    override connectedCallback() {
+      super.connectedCallback?.()
+      this.#touchActionCss.replaceSync(':host { touch-action: none; }')
     }
 
     disconnectedCallback() {
