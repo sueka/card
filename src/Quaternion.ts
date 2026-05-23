@@ -130,8 +130,9 @@ export default class Quaternion {
   }
 
   toAxisAngle(this: Quaternion): { axis: Vector3d, angle: number } {
-    const angle = 2 * Math.acos(this.w)
-    const s = Math.sqrt(1 - this.w * this.w) // sin(angle / 2)
+    const w = Math.max(-1, Math.min(this.w, 1))
+    const angle = 2 * Math.acos(w)
+    const s = Math.sqrt(1 - w * w) // sin(angle / 2)
     const axis = s !== 0 ? this.v.sdiv(s) : Vector3d.of(1, 0, 0)
 
     return { axis, angle }
