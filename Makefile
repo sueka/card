@@ -23,4 +23,6 @@ endif
 
 serve : build
 	\find src -type f | entr make & \
+	ENTR_PID=$$! ; \
+	trap "kill $$ENTR_PID 2>/dev/null" EXIT ; \
 	$(SERVE) _site
