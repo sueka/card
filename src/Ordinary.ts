@@ -28,7 +28,7 @@ class Ordinary extends HTMLElement {
     return ['color', 'type', 'size'] as const
   }
 
-  async attributeChangedCallback(name: typeof Ordinary.observedAttributes[number]) {
+  attributeChangedCallback(name: typeof Ordinary.observedAttributes[number]) {
     switch (name) {
       case 'color':
         this.#loadCss()
