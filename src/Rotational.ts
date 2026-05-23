@@ -14,6 +14,7 @@ export default function Rotational<T extends Constructor<HTMLElement>> (BaseClas
     #pinching = false
     #lastDragPosition: IPosition | null = null
     #lastPinchAngle: number | null = null
+    #abortController = new AbortController()
 
     constructor(...args: any[]) {
       super(...args)
@@ -21,19 +22,25 @@ export default function Rotational<T extends Constructor<HTMLElement>> (BaseClas
       this.#rotationCss = new CSSStyleSheet()
       this.shadowRoot?.adoptedStyleSheets.push(this.#rotationCss)
 
-      globalThis.addEventListener('mousedown', this.#handleDragStart.bind(this))
-      globalThis.addEventListener('mousemove', this.#handleDrag.bind(this))
-      globalThis.addEventListener('mouseup', this.#handleDragEnd.bind(this))
-      globalThis.addEventListener('mouseleave', this.#handleDragEnd.bind(this))
-      globalThis.addEventListener('wheel', this.#handleWheel.bind(this))
-      globalThis.addEventListener('touchstart', this.#handleDragStart.bind(this))
-      globalThis.addEventListener('touchmove', this.#handleDrag.bind(this))
-      globalThis.addEventListener('touchend', this.#handleDragEnd.bind(this))
-      globalThis.addEventListener('touchcancel', this.#handleDragEnd.bind(this))
-      globalThis.addEventListener('touchstart', this.#handlePinchStart.bind(this))
-      globalThis.addEventListener('touchmove', this.#handlePinch.bind(this))
-      globalThis.addEventListener('touchend', this.#handlePinchEnd.bind(this))
-      globalThis.addEventListener('touchcancel', this.#handlePinchEnd.bind(this))
+      const signal = this.#abortController.signal
+
+      globalThis.addEventListener('mousedown', this.#handleDragStart.bind(this), { signal })
+      globalThis.addEventListener('mousemove', this.#handleDrag.bind(this), { signal })
+      globalThis.addEventListener('mouseup', this.#handleDragEnd.bind(this), { signal })
+      globalThis.addEventListener('mouseleave', this.#handleDragEnd.bind(this), { signal })
+      globalThis.addEventListener('wheel', this.#handleWheel.bind(this), { signal })
+      globalThis.addEventListener('touchstart', this.#handleDragStart.bind(this), { signal })
+      globalThis.addEventListener('touchmove', this.#handleDrag.bind(this), { signal })
+      globalThis.addEventListener('touchend', this.#handleDragEnd.bind(this), { signal })
+      globalThis.addEventListener('touchcancel', this.#handleDragEnd.bind(this), { signal })
+      globalThis.addEventListener('touchstart', this.#handlePinchStart.bind(this), { signal })
+      globalThis.addEventListener('touchmove', this.#handlePinch.bind(this), { signal })
+      globalThis.addEventListener('touchend', this.#handlePinchEnd.bind(this), { signal })
+      globalThis.addEventListener('touchcancel', this.#handlePinchEnd.bind(this), { signal })
+    }
+
+    disconnectedCallback() {
+      this.#abortController.abort()
     }
 
     #handleDragStart(event: MouseEvent | TouchEvent) {
